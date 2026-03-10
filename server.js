@@ -1,14 +1,46 @@
 const WebSocket = require('ws');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
 const PORT = process.env.PORT || 3001;
+
+// Create HTTP server
+const server = http.createServer((req, res) => {
+    if (req.url === '/' || req.url === '/index.html') {
+        fs.readFile(path.join(__dirname, 'public', 'index.html'), (err, data) => {
+            if (err) {
+                res.writeHead(500);
+                res.end('Error loading page');
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
+        });
+    } else if (req.url === '/favicon.png') {
+        fs.readFile(path.join(__dirname, 'public', 'favicon.png'), (err, data) => {
+            if (err) {
+                res.writeHead(404);
+                res.end('Not found');
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'image/png' });
+            res.end(data);
+        });
+    } else {
+        res.writeHead(404);
+        res.end('Not found');
+    }
+});
+
 const wss = new WebSocket.Server({ 
-    port: PORT,
+    server: server,
     perMessageDeflate: false
 });
 
 const devices = new Map();
 
-console.log(`IoT Control Server running on port ${PORT}`);
+console.log(`IoT Control Server starting...`);
 
 wss.on('connection', (ws) => {
     console.log('New client connected');
@@ -91,3 +123,9 @@ function broadcastDeviceList() {
         }
     });
 }
+
+// Start HTTP server
+server.listen(PORT, () => {
+    console.log(`IoT Control Server running on port ${PORT}`);
+    console.log(`Web interface: http://localhost:${PORT}`);
+});

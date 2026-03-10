@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Control Server</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #10b981;
+            border-radius: 20px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .info p {
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        .devices {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🌑</div>
+        <h1>IoT Control Server</h1>
+        <div class="status">🟢 Online</div>
+        
+        <div class="info">
+            <p><strong>WebSocket Server</strong></p>
+            <p>Connect your Sunny ☀️ and Moony 🌙 apps</p>
+            <p style="margin-top: 20px;">
+                <code id="wsUrl">wss://iot-control-server.onrender.com</code>
+            </p>
+        </div>
+        
+        <div class="devices">
+            <p>Connected Devices: <strong id="deviceCount">0</strong></p>
+        </div>
+    </div>
+
+    <script>
+        // Update WebSocket URL dynamically
+        document.getElementById('wsUrl').textContent = 'wss://' + window.location.host;
+        
+        // Connect to WebSocket to show device count
+        const ws = new WebSocket('wss://' + window.location.host);
+        
+        ws.onopen = () => {
+            console.log('Connected to server');
+        };
+        
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.type === 'device_list') {
+                    document.getElementById('deviceCount').textContent = data.devices.length;
+                }
+            } catch (e) {
+                console.error('Error parsing message:', e);
+            }
+        };
+    </script>
+</body>
+</html>
