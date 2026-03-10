@@ -1,0 +1,26 @@
+EASIEST DEPLOYMENT OPTIONS (Since Railway trial expired):
+
+OPTION 1: RENDER.COM (Recommended - Free Forever)
+1. Go to https://render.com and sign up with GitHub
+2. Click "New +" -> "Web Service"
+3. Connect this repository
+4. Settings:
+   - Build Command: npm install
+   - Start Command: npm start
+   - Plan: Free
+5. Click "Create Web Service"
+6. Get URL like: https://wemote.onrender.com
+7. Use as: wss://wemote.onrender.com
+
+OPTION 2: GLITCH.COM (Easiest - No GitHub needed)
+1. Go to https://glitch.com
+2. Click "New Project" -> "glitch-hello-node"
+3. Copy your server.js and package.json files
+4. Auto-deploys instantly
+5. Get URL from Share button
+6. Use as: wss://your-project.glitch.me
+
+OPTION 3: Push to GitHub then use Render
+See RENDER_DEPLOY.md for details
+
+Your Railway project "wemote" needs a paid plan to continue.
