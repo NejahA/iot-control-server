@@ -1,0 +1,14 @@
+After creating the GitHub repository, run:
+
+cd iot-device-control/server
+git push -u origin main
+
+If it asks for credentials, you may need to create a Personal Access Token:
+1. Go to https://github.com/settings/tokens
+2. Click "Generate new token (classic)"
+3. Give it a name like "iot-server"
+4. Check "repo" scope
+5. Generate and copy the token
+6. Use the token as your password when pushing
+
+Or use GitHub Desktop app for easier authentication.

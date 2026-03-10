@@ -56,6 +56,20 @@ function handleMessage(ws, message) {
                 console.log(`Command sent from ${message.from} to ${message.to}: ${message.command}`);
             }
             break;
+            
+        case 'chat':
+            const chatTarget = devices.get(message.to);
+            if (chatTarget && chatTarget.readyState === WebSocket.OPEN) {
+                chatTarget.send(JSON.stringify({
+                    type: 'chat',
+                    from: message.from,
+                    fromName: message.fromName,
+                    message: message.message,
+                    timestamp: new Date().toISOString()
+                }));
+                console.log(`Chat from ${message.fromName} to ${message.to}: ${message.message}`);
+            }
+            break;
     }
 }
 
