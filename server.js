@@ -17,8 +17,10 @@ const server = http.createServer((req, res) => {
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(data);
         });
-    } else if (req.url === '/favicon.png') {
-        fs.readFile(path.join(__dirname, 'public', 'favicon.png'), (err, data) => {
+    } else if (req.url.endsWith('.png')) {
+        // Serve any PNG file from public folder
+        const filename = path.basename(req.url);
+        fs.readFile(path.join(__dirname, 'public', filename), (err, data) => {
             if (err) {
                 res.writeHead(404);
                 res.end('Not found');
