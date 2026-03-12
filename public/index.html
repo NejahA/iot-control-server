@@ -75,7 +75,7 @@
 <body>
     <div class="container">
         <!-- <div class="icon">🌗</div> -->
-        <img src="./starry-sky.png" alt="IoT Control Server" style="max-width: 300px; height: auto; display: block; margin: 0 auto;">
+        <img id="statusImage" src="./starry-sky.png" alt="IoT Control Server" style="max-width: 300px; height: auto; display: block; margin: 0 auto;">
         <div class="status">🟢 Online</div>
         
         <div class="info">
@@ -112,7 +112,7 @@
                     const hasSunny = data.devices.some(d => d.deviceName && d.deviceName.startsWith('Sunny-'));
                     const hasMoony = data.devices.some(d => d.deviceName && d.deviceName.startsWith('Moony-'));
                     
-                    const imgElement = document.querySelector('img[alt="IoT Control Server"]');
+                    const imgElement = document.getElementById('statusImage');
                     if (imgElement) {
                         if (hasSunny && hasMoony) {
                             imgElement.src = './total-eclipse.png';
