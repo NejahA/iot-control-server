@@ -41,11 +41,16 @@ const wss = new WebSocket.Server({
 });
 
 const devices = new Map();
+const allClients = new Set();
 
 console.log(`IoT Control Server starting...`);
 
 wss.on('connection', (ws) => {
     console.log('New client connected');
+    allClients.add(ws);
+    
+    // Send current device list to newly connected client
+    sendDeviceListTo(ws);
     
     ws.on('message', (data) => {
         try {
@@ -57,6 +62,7 @@ wss.on('connection', (ws) => {
     });
     
     ws.on('close', () => {
+        allClients.delete(ws);
         for (const [deviceId, client] of devices.entries()) {
             if (client === ws) {
                 devices.delete(deviceId);
@@ -107,6 +113,23 @@ function handleMessage(ws, message) {
     }
 }
 
+function sendDeviceListTo(ws) {
+    const deviceList = Array.from(devices.entries()).map(([id, client]) => ({
+        deviceId: id,
+        deviceName: client.deviceName,
+        platform: client.platform
+    }));
+    
+    const message = JSON.stringify({
+        type: 'device_list',
+        devices: deviceList
+    });
+    
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(message);
+    }
+}
+
 function broadcastDeviceList() {
     const deviceList = Array.from(devices.entries()).map(([id, ws]) => ({
         deviceId: id,
@@ -119,7 +142,7 @@ function broadcastDeviceList() {
         devices: deviceList
     });
     
-    devices.forEach((ws) => {
+    allClients.forEach((ws) => {
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(message);
         }
