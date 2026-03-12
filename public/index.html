@@ -75,7 +75,7 @@
 <body>
     <div class="container">
         <!-- <div class="icon">🌗</div> -->
-        <img src="./favicon.png" alt="IoT Control Server" style="max-width: 300px; height: auto;">
+        <img src="./total-eclipse.png" alt="IoT Control Server" style="max-width: 300px; height: auto; display: block; margin: 0 auto;">
         <div class="status">🟢 Online</div>
         
         <div class="info">
@@ -107,6 +107,23 @@
                 const data = JSON.parse(event.data);
                 if (data.type === 'device_list') {
                     document.getElementById('deviceCount').textContent = data.devices.length;
+                    
+                    // Update image based on connected devices
+                    const hasSunny = data.devices.some(d => d.deviceName && d.deviceName.startsWith('Sunny-'));
+                    const hasMoony = data.devices.some(d => d.deviceName && d.deviceName.startsWith('Moony-'));
+                    
+                    const imgElement = document.querySelector('img[alt="IoT Control Server"]');
+                    if (imgElement) {
+                        if (hasSunny && hasMoony) {
+                            imgElement.src = './total-eclipse.';
+                        } else if (hasSunny) {
+                            imgElement.src = './sunny.png';
+                        } else if (hasMoony) {
+                            imgElement.src = './full-moon.png';
+                        } else {
+                            imgElement.src = './starry-sky.png';
+                        }
+                    }
                 }
             } catch (e) {
                 console.error('Error parsing message:', e);
