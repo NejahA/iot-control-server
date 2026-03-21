@@ -81,7 +81,8 @@ function handleMessage(ws, message) {
             ws.deviceId = message.deviceId;
             ws.deviceName = message.deviceName;
             ws.platform = message.platform;
-            console.log(`Device registered: ${message.deviceName} (${message.deviceId})`);
+            ws.deviceType = message.deviceType || '';
+            console.log(`Device registered: ${message.deviceName} (${message.deviceId})${message.deviceType ? ' - Type: ' + message.deviceType : ''}`);
             broadcastDeviceList();
             break;
             
@@ -117,7 +118,8 @@ function sendDeviceListTo(ws) {
     const deviceList = Array.from(devices.entries()).map(([id, client]) => ({
         deviceId: id,
         deviceName: client.deviceName,
-        platform: client.platform
+        platform: client.platform,
+        deviceType: client.deviceType || ''
     }));
     
     const message = JSON.stringify({
@@ -134,7 +136,8 @@ function broadcastDeviceList() {
     const deviceList = Array.from(devices.entries()).map(([id, ws]) => ({
         deviceId: id,
         deviceName: ws.deviceName,
-        platform: ws.platform
+        platform: ws.platform,
+        deviceType: ws.deviceType || ''
     }));
     
     const message = JSON.stringify({
