@@ -111,6 +111,22 @@ function handleMessage(ws, message) {
                 console.log(`Chat from ${message.fromName} to ${message.to}: ${message.message}`);
             }
             break;
+            
+        case 'file_transfer':
+            const fileTarget = devices.get(message.to);
+            if (fileTarget && fileTarget.readyState === WebSocket.OPEN) {
+                fileTarget.send(JSON.stringify({
+                    type: 'file_transfer',
+                    from: message.from,
+                    fromName: message.fromName,
+                    fileName: message.fileName,
+                    fileSize: message.fileSize,
+                    fileData: message.fileData,
+                    timestamp: new Date().toISOString()
+                }));
+                console.log(`File transfer from ${message.fromName} to ${message.to}: ${message.fileName} (${message.fileSize} bytes)`);
+            }
+            break;
     }
 }
 
